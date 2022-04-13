@@ -74,7 +74,8 @@ class GameOfLife:
         # self.grid = nextState 
 
         # Part E
-        convolvedBoard = signal.convolve(self.grid, self.neighborhood, mode='same')
+        convolvedBoard = signal.convolve(self.grid, self.neighborhood, 
+                mode='same', method='auto')
         nextState = (((self.grid == 1) & (convolvedBoard > 1) & 
                 (convolvedBoard < 4)) | ((self.grid == 0) & 
                 (convolvedBoard == 3))).astype(int)
