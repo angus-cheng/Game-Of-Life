@@ -17,11 +17,11 @@ class GameOfLife:
     Object for computing Conway's Game of Life (GoL) cellular machine/automata
     '''
     def __init__(self, N=256, finite=False, fastMode=False):
-        self.grid = np.zeros((N,N), np.int)
+        self.grid = np.zeros((N,N), np.int64)
         rows, columns = self.grid.shape
         self.columns = rows
         self.rows = columns
-        self.neighborhood = np.ones((3,3), np.int) # 8 connected kernel
+        self.neighborhood = np.ones((3,3), np.int64) # 8 connected kernel
         self.neighborhood[1,1] = 0 #do not count centre pixel
         self.finite = finite
         self.fastMode = fastMode
@@ -41,6 +41,9 @@ class GameOfLife:
         return self.getStates()
 
     def getNeighbors(self, x, y):
+        '''
+        Gets the number of live neighbours around (x,y) cell
+        '''
         total = 0
         for i in range(-1, 2):
             for j in range(-1, 2):
@@ -60,27 +63,27 @@ class GameOfLife:
         '''
         #PART A & E CODE HERE
         # Part A
-        # nextState = np.copy(self.grid)
-        # for x in range(self.rows):
-        #     for y in range(self.columns):
-        #         cellState = self.grid[x][y]
-        #         neighbors = self.getNeighbors(x, y)
-        #         if cellState == 0 and neighbors == 3:
-        #             nextState[x][y] = self.aliveValue
-        #         elif cellState == 1 and (neighbors < 2 or neighbors > 3):
-        #             nextState[x][y] = self.deadValue
-        #         else:
-        #             nextState[x][y] = cellState
-        # self.grid = nextState 
+        nextState = np.copy(self.grid)
+        for x in range(self.rows):
+            for y in range(self.columns):
+                cellState = self.grid[x][y]
+                neighbors = self.getNeighbors(x, y)
+                if cellState == 0 and neighbors == 3:
+                    nextState[x][y] = self.aliveValue
+                elif cellState == 1 and (neighbors < 2 or neighbors > 3):
+                    nextState[x][y] = self.deadValue
+                else:
+                    nextState[x][y] = cellState
+        self.grid = nextState 
 
         # Part E
-        convolvedBoard = signal.convolve(self.grid, self.neighborhood, 
-                mode='same', method='auto')
-        nextState = (((self.grid == 1) & (convolvedBoard > 1) & 
-                (convolvedBoard < 4)) | ((self.grid == 0) & 
-                (convolvedBoard == 3))).astype(int)
-        print(nextState)
-        self.grid = nextState
+        # convolvedBoard = signal.convolve(self.grid, self.neighborhood, 
+        #         mode='same', method='auto')
+        # nextState = (((self.grid == 1) & (convolvedBoard > 1) & 
+        #         (convolvedBoard < 4)) | ((self.grid == 0) & 
+        #         (convolvedBoard == 3))).astype(int)
+        # print(nextState)
+        # self.grid = nextState
     
     def insertBlinker(self, index=(0,0)):
         '''
